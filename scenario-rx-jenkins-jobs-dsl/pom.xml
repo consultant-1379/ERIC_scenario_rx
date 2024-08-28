@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>scenario-rx-parent</artifactId>
+    <groupId>com.ericsson.de</groupId>
+    <version>0.9.20-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>scenario-rx-jenkins-job-dsl</artifactId>
+
+  <properties>
+    <groovy.version>1.8.6</groovy.version>
+    <groovy-eclipse-compiler.version>2.9.2-01</groovy-eclipse-compiler.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>maven.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/releases/</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jenkins-ci.plugins</groupId>
+      <artifactId>job-dsl-core</artifactId>
+      <version>1.58</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>${groovy.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin#how-to-use-the-compiler-pluginsetting-up-the-pom -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerId>groovy-eclipse-compiler</compilerId>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-eclipse-compiler</artifactId>
+            <version>${groovy-eclipse-compiler.version}</version>
+          </dependency>
+          <!-- for 2.8.0-01 and later you must have an explicit dependency on groovy-eclipse-batch -->
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-eclipse-batch</artifactId>
+            <version>${groovy.version}-01</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <!-- https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin#use-the-groovy-eclipse-compiler-mojo-for-configuring-source-folders -->
+      <plugin>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-eclipse-compiler</artifactId>
+        <version>${groovy-eclipse-compiler.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+
+      <!-- Generate Job DSL XML results using command "mvn exec:java" -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.6.0</version>
+        <configuration>
+          <mainClass>javaposse.jobdsl.Run</mainClass>
+          <arguments>
+            <argument>jobs/jobs.groovy</argument>
+            <argument>jobs/seed.groovy</argument>
+            <argument>jobs/view.groovy</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

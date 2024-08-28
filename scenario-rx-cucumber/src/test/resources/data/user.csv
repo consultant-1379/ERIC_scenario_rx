@@ -1,0 +1,5 @@
+id,username,password,enabled,roles
+0,administrator1,TestPassw0rd,true,"USER,ADMINISTRATOR"
+1,administrator2,TestPassw0rd,true,"USER,ADMINISTRATOR"
+2,disabledAdmin,TestPassw0rd,false,"USER,ADMINISTRATOR"
+3,user,TestPassw0rd,true,"USER"
